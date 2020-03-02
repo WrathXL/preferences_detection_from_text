@@ -1,19 +1,23 @@
 import pandas as pd
-
-#parsing document to csv
+import numpy as np
+import json
 
 class data:
-    def __init__(self, path):
-        self.csv = self._get_csv_data(path)
+    def __init__(self, path_data, path_vocabulary):
+        self.csv = self._get_csv_data(path_data) # Actually a DataFrame
         self.size = self._get_size()
         self.labels = ['fact', 'preference', 'activity', 'subject', 'event']
         self.label_count = self._label_count()
+        self.tags = []
+
+        with open(path_vocabulary) as fd:
+            self.vocabulary = json.load(fd)
 
 
     def _get_csv_data(self, path):
         '''
         :param path: The .tsf webanno file exported by annotations
-        :return: A pandas DataFrames containing the tokens labels after the following processing
+        :return: A pandas DataFrames containing the tokens and labels after the following processing
         * Remove comments
         * Remove endlines
         * Remove useless data
@@ -77,12 +81,59 @@ class data:
                 self.csv['BIO'][i] = 'B'
 
 
-    def sentences_labels(self):
-        pass
+    def sentence_and_labels(self):
+        self.lower_words()
+        self.automatic_subject_tagging()
+        self.build_bio()
+
+        sentences = []
+        tags = []
+
+        all_tags = set()
+
+        cur_sent = []
+        cur_tag = []
+        piv = 1
+
+        for i in range(len(self.csv)):
+            sent = int(self.csv['sent-token'][i].split('-')[0])
+            word = self.csv['word'][i]
+            tag = self.csv['BIO'][i]
+            if tag != 'O':
+                tag += '-' + self.csv['label'][i].split('[')[0]
+
+            if sent != piv:
+                piv += 1
+                sentences.append(cur_sent)
+                tags.append(cur_tag)
+                cur_sent, cur_tag = [], []
+
+
+            if word in self.vocabulary:
+                cur_sent.append(self.vocabulary[word])
+            else:
+                cur_sent.append(-1)
+
+            cur_tag.append(tag)
+            all_tags.add(tag)
+
+        all_tags = list(all_tags)
+        tags = [list(map(lambda x : all_tags.index(x), sen)) for sen in tags]
+
+        max_len = max([len(sent) for sent in tags])
+
+        x = [-1] * np.ones((len(tags), max_len))
+        y = [-1] * np.ones((len(tags), max_len))
+
+        for i in range(len(sentences)):
+            l = len(sentences[i])
+            x[i][:l] = sentences[i]
+            y[i][:l] = tags[i]
+
+        return x, y
+
 
 
 if __name__ == '__main__':
-    d = data('data/sensitive-2.tsv')
-    d.lower_words()
-    d.build_bio()
-    d.automatic_subject_tagging()
+    d = data('data/sensitive-2.tsv', 'data/vocabulary.json')
+    x, y = d.sentence_and_labels()

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+import torch
 
 class data:
     def __init__(self, path_data, path_vocabulary):

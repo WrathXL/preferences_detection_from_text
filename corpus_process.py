@@ -1,140 +1,89 @@
-import pandas as pd
 import numpy as np
 import json
-import torch
+from configs import parameters, paths
 
-class data:
-    def __init__(self, path_data, path_vocabulary):
-        self.csv = self._get_csv_data(path_data) # Actually a DataFrame
-        self.size = self._get_size()
-        self.labels = ['fact', 'preference', 'activity', 'subject', 'event']
-        self.label_count = self._label_count()
-        self.tags = []
+class corpus:
+    '''
+    Brinda los métodos necesarios para procesar un '.tsv' exportado por el
+    programa de anotación 'webanno' y retornar los tensores necesarios para distintos
+    modelos
+    '''
 
-        with open(path_vocabulary) as fd:
+    def __init__(self):
+        with open(paths.vocabulary_path) as fd:
             self.vocabulary = json.load(fd)
+        self.tags = {l : parameters.labels.index(l) for l in parameters.labels}
 
-
-    def _get_csv_data(self, path):
+    def read_tsv(self, paths, lower=True, bio=True):
         '''
-        :param path: The .tsf webanno file exported by annotations
-        :return: A pandas DataFrames containing the tokens and labels after the following processing
-        * Remove comments
-        * Remove endlines
-        * Remove useless data
+        Lee  archivos '.tsv' exportado por webanno, limpia el texto y retorna dos numpy d-array
+        en paralelo (sentences, tags)
+
+        sentences[i] es la lista de los indeces de los tokens correspondientes a la oración
+        i en el vocabulario de la clase
+
+        tags[i] es la lista de etiquetas correspondientes a los tokens de la oración i
         '''
-        with open(path) as fd:
-            text = fd.readlines()
 
-        text = filter(lambda s: not s.startswith('#'), text) #remove comments
-        text = [line.split('\t') for line in text] #split by tabs
-        for lis in text: lis.pop() #remove endlines
-        text = list(filter(lambda l : l, text)) #remove empty lists
-        return pd.DataFrame(text, columns=['sent-token', 'letters', 'word', 'BIO', 'label'])
+        text = []
+        for path in paths:
+            with open(path) as fd:
+                text += fd.readlines()
 
-    def _get_size(self):
-        return max([int(s.split('-')[0]) for s in self.csv['sent-token']])
+        text = self._clean_text(text)
+        #text[i] es de esta forma ['1-1', 'the', '_']
 
-    def _label_count(self):
-        labels = {l : 0 for l in self.labels}
-
-        s = set()
-        for i in self.csv['label']:
-            if i and i.split('[')[0] in self.labels:
-                s.add(i)
-
-        for l in s:
-            labels[l.split('[')[0]] += 1
-
-        return labels
-
-    def lower_words(self):
-        '''
-        Convert all words to lower case
-        '''
-        for i, word in enumerate(self.csv['word']):
-            self.csv['word'][i] = self.csv['word'][i].lower()
-
-    def build_bio(self):
-        '''
-        Automatic filling of BIO tagging in a dataframe column
-        '''
-        s = set()
-        for i, l in enumerate(self.csv['label']):
-            if l and l.split('[')[0] in self.labels:
-                if l not in s:
-                    s.add(l)
-                    self.csv['BIO'][i] = 'B'
-                else:
-                    self.csv['BIO'][i] = 'I'
-            else:
-                self.csv['BIO'][i] = 'O'
-
-    def automatic_subject_tagging(self):
-        '''
-        Automatic tagging of words that can be subjects in the meaning of the schema
-        '''
-        keywords = ['i', 'she', 'he', 'we', 'they']
-        for i, w in enumerate(self.csv['word']):
-            if w in keywords :
-                self.csv['label'][i] = 'subject[' + str(self.size + i) + ']'
-                self.label_count['subject'] += 1
-                self.csv['BIO'][i] = 'B'
-
-
-    def sentence_and_labels(self):
-        self.lower_words()
-        self.automatic_subject_tagging()
-        self.build_bio()
-
-        sentences = []
-        tags = []
-
-        all_tags = set()
-
-        cur_sent = []
-        cur_tag = []
-        piv = 1
-
-        for i in range(len(self.csv)):
-            sent = int(self.csv['sent-token'][i].split('-')[0])
-            word = self.csv['word'][i]
-            tag = self.csv['BIO'][i]
-            if tag != 'O':
-                tag += '-' + self.csv['label'][i].split('[')[0]
-
-            if sent != piv:
-                piv += 1
-                sentences.append(cur_sent)
-                tags.append(cur_tag)
-                cur_sent, cur_tag = [], []
-
-
-            if word in self.vocabulary:
-                cur_sent.append(self.vocabulary[word])
-            else:
-                cur_sent.append(-1)
-
-            cur_tag.append(tag)
-            all_tags.add(tag)
-
-        all_tags = list(all_tags)
-        tags = [list(map(lambda x : all_tags.index(x), sen)) for sen in tags]
-
-        max_len = max([len(sent) for sent in tags])
-
-        x = [-1] * np.ones((len(tags), max_len))
-        y = [-1] * np.ones((len(tags), max_len))
-
-        for i in range(len(sentences)):
-            l = len(sentences[i])
-            x[i][:l] = sentences[i]
-            y[i][:l] = tags[i]
+        x, y = self._sent_and_tags(text)
 
         return x, y
 
+    def index_of_word(self, word):
+        '''
+        devuelve el indice de una palabra en el vocabulario definido para la clase
+        '''
+        return self.vocabulary[word] if word in self.vocabulary else -1
+
+    def index_of_tag(self, tag):
+        '''
+        devuelve el indice de una etiqueta en las etiquetas definidas para la clase
+        '''
+        return  self.tags[tag] if tag in self.tags else -1
+
+
+    def _clean_text(self, text):
+        # remove comments
+        text = filter(lambda s: not s.startswith('#'), text)
+        # split by tabs
+        text = [line.split('\t') for line in text]
+        # remove endlines
+        for lis in text: lis.pop()
+        # remove empty lists
+        text = list(filter(lambda l: l, text))
+        #remove unnecessary columns
+        text = [[line[0], line[2], line[4]] for line in text]
+        return text
+
+    def _sent_and_tags(self, text):
+        # text[i] es de esta forma ['1-1', 'the', '_']
+        max_len = max([int(toks[0].split('-')[1]) for toks in text])
+        count = int(text[-1][0].split('-')[0])
+
+        sent = [-1] * np.ones((count, max_len))
+        tag = [-1] * np.ones((count, max_len))
+
+        for line in text:
+            id_sent, id_tok = map(int, line[0].split('-'))
+            sent[id_sent - 1, id_tok - 1] = self.index_of_word(line[1])
+            label = -1
+            if line[2] != -1:
+                bio = label[2][len(label[2]) - 2]
+                label = bio + '-' + label[2][:len(label[2]) - 3]
+            tag[id_sent - 1, id_tok - 1] = self.index_of_tag(label)
+
+        return sent, tag
 
 
 if __name__ == '__main__':
-    d = data('data/sensitive-2.tsv', 'data/vocabulary.json')
-    x, y = d.sentence_and_labels()
+    files = ['data/sensitive-3.tsv']
+    c = corpus()
+    data = c.read_tsv(files)

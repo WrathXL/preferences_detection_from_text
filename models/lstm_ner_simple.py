@@ -1,34 +1,55 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from embedding import pretrained_embedding
+from models.embedding import pretrained_embedding
+
+
 
 class ner_simple(nn.Module):
 
-    def __init__(self, params, embedding_path):
+    def __init__(self, embedding_path):
         super(ner_simple, self).__init__()
 
-        self.embedding = pretrained_embedding(embedding_path)
-        self.lstm = nn.LSTM(params.embedding_dim, params.lstm_hidd_dim, bidirectional=True)
-        self.fc = nn.Linear(params.lstm_hidd_dim, params.numb_of_tags)
+        e = pretrained_embedding(embedding_path)
+
+        self.embedding = nn.Embedding(e.vocabulary_size, e.dimension)
+
+        self.embedding.weight.data.copy_(torch.from_numpy(e.word_vecs))
+        self.embedding.weight.requires_grad = False
+
+        self.lstm = nn.LSTM(e.dimension, 64, bidirectional=True)
+        self.fc = nn.Linear(128, 11)
 
     def forward(self, x):
+
+        for i in range(len(x)):
+            for j in range(len(x[i])):
+                if x[i][j] == -1:
+                    print(-1)
+
         x = self.embedding(x)
         x, _ = self.lstm(x)
         x = x.view(-1, x.shape[2])
         x = self.fc(x)
 
-        return F.log_softmax(x, dim=1)
+        return F.softmax(x, dim=1)
 
-    def loss_function(self, outputs, labels):
+    def loss_fn(outputs, labels):
         labels = labels.view(-1)
         mask = (labels >= 0).float()
-        num_tokens = int(torch.sum(mask).data[0])
+        num_tokens = int(torch.sum(mask).item())
+
         outputs = outputs[range(outputs.shape[0]), labels] * mask
         return -torch.sum(outputs) / num_tokens
 
+    def accuaracy(outputs, labels):
+        labels = labels.view(-1)
+        mask = (labels >= 0).float()
+        num_tokens = int(torch.sum(mask).item())
 
+        predictions = torch.argmax(outputs, 1)
 
+        return torch.sum(predictions == labels).item() / num_tokens
 
 
 if __name__ == '__main__':

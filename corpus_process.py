@@ -118,6 +118,9 @@ class Corpus:
 
 
     def get_dataset(self):
+        '''
+        :return: Dataset torch object for models
+        '''
         sent, tags = self.read_tsv()
 
         max_len = max([len(s) for s in sent])

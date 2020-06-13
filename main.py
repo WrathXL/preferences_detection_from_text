@@ -3,9 +3,12 @@ from models.lstm_ner_simple import ner_simple
 import torch
 from torch.utils.data import DataLoader, random_split
 
+from seqeval.metrics import accuracy_score
+from seqeval.metrics import classification_report
 
-files_paths = ['data/sensitive.tsv']
-vocabulary_path = 'data/vocabulary_glove.json'
+
+files_paths = ['data/sensitive1.tsv', 'data/sensitive2.tsv', 'data/sensitive3.tsv']
+vocabulary_path = 'data/vocabulary_corpus.json'
 embedding_path = 'data/glove.6B.100d.txt'
 
 # ========================================
@@ -78,6 +81,9 @@ def train(epochs = 20):
         total_val_loss = 0
         total_val_acc = 0
 
+        pred_label = []
+        true_label = []
+
         for input_ids, labels in val_loader:
 
             with torch.no_grad():
@@ -86,6 +92,14 @@ def train(epochs = 20):
 
                 total_val_loss += loss.item()
                 total_val_acc += ner_simple.accuaracy(output, labels)
+
+            labels = labels.view(-1)
+            for i in range(len(labels)):
+                if labels[i] != -1:
+                    pred_label.append(corpus.labels[ torch.argmax(output[i])])
+                    true_label.append( corpus.labels[labels[i]] )
+
+        print(classification_report(true_label, pred_label))
 
         print("  Accuracy: {0:.2f}".format(total_val_acc / len(val_loader)))
         print("  Validation Loss: {0:.2f}".format(total_val_loss / len(val_loader)))

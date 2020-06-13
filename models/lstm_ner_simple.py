@@ -7,25 +7,21 @@ from models.embedding import pretrained_embedding
 
 class ner_simple(nn.Module):
 
-    def __init__(self, embedding_path):
+    def __init__(self, embedding_path=None):
         super(ner_simple, self).__init__()
 
-        e = pretrained_embedding(embedding_path)
+        #e = pretrained_embedding(embedding_path)
 
-        self.embedding = nn.Embedding(e.vocabulary_size, e.dimension)
+        #self.embedding = nn.Embedding(e.vocabulary_size, e.dimension)
 
-        self.embedding.weight.data.copy_(torch.from_numpy(e.word_vecs))
-        self.embedding.weight.requires_grad = False
+        #self.embedding.weight.data.copy_(torch.from_numpy(e.word_vecs))
+        #self.embedding.weight.requires_grad = False
 
-        self.lstm = nn.LSTM(e.dimension, 64, bidirectional=True)
+        self.embedding = nn.Embedding(4031, 64)
+        self.lstm = nn.LSTM(64, 64, bidirectional=True)
         self.fc = nn.Linear(128, 11)
 
     def forward(self, x):
-
-        for i in range(len(x)):
-            for j in range(len(x[i])):
-                if x[i][j] == -1:
-                    print(-1)
 
         x = self.embedding(x)
         x, _ = self.lstm(x)

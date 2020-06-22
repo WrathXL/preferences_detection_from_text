@@ -1,213 +1,164 @@
+from corpus_process import Corpus
+from torch.utils.data import DataLoader, random_split
+from transformers import BertForTokenClassification, AdamW
 import torch
-import json
-from torch.utils.data import TensorDataset
-from transformers import BertTokenizer
-
-
-class Corpus:
-    '''
-    Brinda los métodos necesarios para procesar un '.tsv' exportado por el
-    programa de anotación 'webanno' y retornar los tensores necesarios para distintos
-    modelos
-    '''
-
-    def __init__(self, files, vocabulary_path=None):
-
-        self.files_paths = files
-
-        if vocabulary_path:
-            with open(vocabulary_path) as fd:
-                self.vocabulary = json.load(fd)
-
-        self.labels = ['O', 'B-subject', 'I-subject', 'B-preference', 'I-preference',  'B-activity', 'I-activity', 'B-object', 'I-object']
-        self.labels_dict = {l : self.labels.index(l) for l in self.labels}
-
-        self.subjects = ['i', 'we', 'he', 'she', 'they']
-
-    def read_tsv(self,  lower=True, auto_subject=True):
-        '''
-        Lee  archivos '.tsv' exportado por webanno, limpia el texto y retorna dos numpy d-array
-        en paralelo (sentences, tags)
-
-        sentences[i] es la lista de los indeces de los tokens correspondientes a la oración
-        i en el vocabulario de la clase
-
-        tags[i] es la lista de etiquetas correspondientes a los tokens de la oración i
-        '''
-
-        text = []
-        for path in self.files_paths:
-            with open(path) as fd:
-                text += fd.readlines()
-
-        text = self._clean_text(text)
-        #text[i] es de esta forma ['1-1', 'the', '_']
-
-        x, y = self._sent_and_tags(text)
-
-        if lower:
-            for i in range(len(x)):
-                for j in range(len(x[i])):
-                    x[i][j] = x[i][j].lower()
-
-        if auto_subject:
-            for i in range(len(x)):
-                for j in range(len(x[i])):
-                    if x[i][j] in self.subjects and y[i][j] == 'O':
-                        y[i][j] = 'B-subject'
-
-        return x, y
-
-    def index_of_word(self, word):
-        '''
-        devuelve el indice de una palabra en el vocabulario definido para la clase
-        '''
-        return self.vocabulary[word] + 1 if word in self.vocabulary else 0
-
-    def index_of_label(self, tag):
-        '''
-        devuelve el indice de una etiqueta en las etiquetas definidas para la clase
-        '''
-        return  self.labels_dict[tag] if tag in self.labels_dict else 0
-
-
-    def _clean_text(self, text):
-        # remove comments
-        text = filter(lambda s: not s.startswith('#'), text)
-        # split by tabs
-        text = [line.split('\t') for line in text]
-        # remove endlines
-        for lis in text: lis.pop()
-        # remove empty lists
-        text = list(filter(lambda l: l, text))
-        #remove unnecessary columns
-        text = [[line[0], line[2], line[4], line[3]] for line in text]
-        return text
-
-    def _sent_and_tags(self, text):
-        # text[i] es de esta forma ['1-1', 'the', '_']
-
-        sent, tag = [], []
-
-        cur_sent, cur_tag = [], []
-        piv_id = 1
-
-        for i, line in enumerate(text):
-            id_sent, id_tok = map(int, line[0].split('-'))
-
-            if id_sent != piv_id:
-                if len(cur_sent) > 1:
-                    sent.append(cur_sent)
-                    tag.append(cur_tag)
-                cur_sent, cur_tag = [], []
-                piv_id = id_sent
-
-            cur_sent.append(line[1])
-
-            if line[2] != '_':
-                if line[3] == text[i - 1][3] and line[3] != '*':
-                    cur_tag.append('I-' + line[2].split('[')[0] )
-                else:
-                    cur_tag.append('B-' + line[2].split('[')[0])
-            else:
-                cur_tag.append('O')
-
-
-        return sent, tag
+from seqeval.metrics import accuracy_score, f1_score, classification_report
+from seqeval.metrics import classification_report
 
 
 
-    def get_dataset(self):
-        '''
-        :return: Dataset torch object for models
-        '''
-        sent, tags = self.read_tsv()
+files_train_paths = ['data/sensitive1.tsv', 'data/sensitive3.tsv']
+files_test_path = ['data/sensitive2.tsv']
+pretrained_dataset = 'bert-base-uncased'
 
-        max_len = max([len(s) for s in sent])
+# ========================================
+#               DATA
+# ========================================
 
-        x = torch.full((len(sent), max_len), 0, dtype=torch.long)
-        #loss functions needs to ignore y[i] == -1. Otherwise this x[i] == 0 is an index for a word in embedding
-        y = torch.full((len(tags), max_len), -1, dtype=torch.long)
+data_train = Corpus(files_train_paths).get_dataset_bert()
+data_test = Corpus(files_test_path).get_dataset_bert()
 
-        for i, s in enumerate(sent):
-            for j, tok in enumerate(s):
-                x[i, j] = self.index_of_word(tok)
-
-        for i, s in enumerate(tags):
-            for j, t in enumerate(s):
-                y[i, j] = self.index_of_label(t);
+val_size = int(0.2 * len(data_train))
+train_size = len(data_train) - val_size
 
 
-        return  TensorDataset(x, y)
+train_dataset, val_dataset = random_split(data_train, [train_size, val_size])
+
+batch_size = 64
+
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+val_loader = DataLoader(val_dataset, batch_size=batch_size)
+
+print("train size : {}".format(train_size))
+print("val size : {}".format(val_size))
+
+# ========================================
+#               MODEL
+# ========================================
+
+LABELS = Corpus(files_test_path).labels
+
+model = BertForTokenClassification.from_pretrained(pretrained_dataset, num_labels=len(LABELS))
+optimizer = AdamW(model.parameters(),  lr = 2e-5, eps = 1e-8)
+
+# print functions
+def p_epoch_status(epoch, epochs):
+    print("")
+    print('======== Epoch {:} / {:} ========'.format(epoch + 1, epochs))
+    print('Training...')
+
+def p_batch_staus(step, size, epoch):
+    print(
+        'Train Epoch: {} [{}/{} ({:.0f}%)]'.format(
+            epoch, step * size, len(train_loader.dataset),
+            100. * step / len(train_loader)))
 
 
-    def get_dataset_bert(self, pre_trained='bert-base-uncased'):
-        sents, tags = self.read_tsv()
+def train(epochs=5):
 
-        # Primero arrglar problema de la tokenización
-        new_sents, new_tags = [], []
-        tokenizer = BertTokenizer.from_pretrained(pre_trained, do_lower_case=True)
-        for i, sent in enumerate(sents):
-            new_sent = []
-            new_tag = []
-            for idx, tok in enumerate(sent):
-                tag_pref = tags[i][idx].split('-')[0]
+    for epoch in range(epochs):
+        print(p_epoch_status(epoch, epochs))
+        # ========================================
+        #               Training
+        # ========================================
+        total_train_loss = 0
+        model.train()
+        step = 1
+        for input_ids, labels, mask in train_loader:
 
-                for j, t in enumerate(tokenizer.tokenize(tok)):
-                    new_sent.append(t)
+            p_batch_staus(step, len(input_ids), epoch)
+            step += 1
 
-                    if j > 0 and tag_pref == 'B':
-                        new_tag.append('I-' + tags[i][idx].split('-')[1])
-                    else:
-                        new_tag.append(tags[i][idx])
+            model.zero_grad()
 
-            new_sents.append(new_sent)
-            new_tags.append(new_tag)
+            output = model(input_ids, token_type_ids=None,
+                     attention_mask=mask, labels=labels)
 
-        # Segundo padear las listas y crear los tensores
+            loss = output[0]
+            total_train_loss += loss.item()
 
-        max_len = max([len(s) for s in new_sents])
+            loss.backward()
+            optimizer.step()
 
-        x = torch.zeros((len(new_sents), max_len + 1), dtype=torch.long)
-        y = torch.zeros((len(new_tags), max_len + 1), dtype=torch.long)
-        masks = torch.zeros((len(new_sents), max_len + 1), dtype=torch.long)
-
-        for i, sent in enumerate(new_sents):
-            encoded_dict = tokenizer.encode_plus(
-                sent,  # Sentence to encode.
-                add_special_tokens=True,  # Add '[CLS]' and '[SEP]'
-                max_length=max_len + 1,  # Pad & truncate all sentences.
-                pad_to_max_length=True,
-                return_attention_mask=True,  # Construct attn. masks.
-                return_tensors='pt',  # Return pytorch tensors.
-            )
-
-            x[i] = encoded_dict['input_ids']
-            y[i][1: len(sent) + 1] =  torch.tensor([self.index_of_label(l) for l in new_tags[i]])
-            masks[i] = encoded_dict['attention_mask']
-
-        return TensorDataset(x, y, masks)
+        avg_train_loss = total_train_loss / len(train_loader)
+        print("Average train loss: {}".format(avg_train_loss))
 
 
+        # ========================================
+        #               Validation
+        # ========================================
+
+        print("")
+        print("Running Validation...")
+
+        model.eval()
+        total_val_loss = 0
+
+        pred_labels = []
+        true_labels = []
+
+        for input_ids, labels, mask in val_loader:
+
+            with torch.no_grad():
+                output = model(input_ids, token_type_ids=None,
+                     attention_mask=mask, labels=labels)
+
+            loss, logits = output[:2]
+            total_val_loss += loss.item()
+
+            logits = logits.argmax(dim=2).view(-1)
+            labels = labels.view(-1)
+            mask = mask.view(-1)
+
+            for i in range(len(input_ids)):
+                if mask[i]:
+                    pred_labels.append(LABELS[logits[i]])
+                    true_labels.append(LABELS[labels[i]])
 
 
+        eval_loss = eval_loss / len(val_loader)
+        print("Validation loss: {}".format(eval_loss))
+        print("Validation Accuracy: {}".format(accuracy_score(true_labels, pred_labels)))
+        print("Validation F1-Score: {}".format(f1_score(true_labels, pred_labels)))
+        print(classification_report(true_labels, pred_labels))
 
-    def build_sent(self, triplet):
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+def test():
+    pred_labels = []
+    true_labels = []
 
-        sent = tokenizer.convert_ids_to_tokens(triplet[0])
-        tags = [self.labels[t] for t in triplet[1]]
+    for input_ids, labels, mask in data_test:
 
-        return list(zip(sent, tags))
+        with torch.no_grad():
+            logits = model(torch.tensor([input_ids.numpy()]))
+
+        logits = logits[0].argmax(dim=2).view(-1)
+        mask = mask.view(-1)
+
+        for i in range(len(input_ids)):
+            if mask[i]:
+                pred_labels.append(LABELS[logits[i]])
+                true_labels.append(LABELS[labels[i]])
+
+    print("Test Accuracy: {}".format(accuracy_score(true_labels, pred_labels)))
+    print("Test F1-Score: {}".format(f1_score(true_labels, pred_labels)))
+    print(classification_report(true_labels, pred_labels))
+
+    print(classification_report(true_labels, pred_labels))
+
 
 if __name__ == '__main__':
-    files = ['data/sensitive.tsv']
-    voc_path = 'data/vocabulary_glove.json'
+    train(4)
+    test()
+    print(model)
+
+
+# def eval(input_ids, mask):
+#     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+#     toks = tokenizer.convert_ids_to_tokens(input_ids)
+#     logits = model(torch.tensor([list(input_ids)]), token_type_ids=None ,attention_mask=torch.tensor([list(mask)]))
+#     logits = logits.argmax(dim=2).view(-1)
+#     labels = [corpus.labels[i] for i in logits]
+#     return list(zip(toks, labels))
 
 
 
-    c = Corpus(files, vocabulary_path=voc_path)
-    dataset = c.get_dataset_bert()
-
-    # sents, tags = c.read_tsv(files)
-    # x = c.get_dataset(sents, tags);

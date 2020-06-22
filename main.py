@@ -18,7 +18,7 @@ pretrained_dataset = 'bert-base-uncased'
 data_train = Corpus(files_train_paths).get_dataset_bert()
 data_test = Corpus(files_test_path).get_dataset_bert()
 
-val_size = int(0.2 * len(data_train))
+val_size = int(0.4 * len(data_train))
 train_size = len(data_train) - val_size
 
 
@@ -26,7 +26,7 @@ train_dataset, val_dataset = random_split(data_train, [train_size, val_size])
 
 batch_size = 64
 
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=False)
 val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 print("train size : {}".format(train_size))
@@ -115,8 +115,11 @@ def train(epochs=5):
                     pred_labels.append(LABELS[logits[i]])
                     true_labels.append(LABELS[labels[i]])
 
+            print(mask)
+            print(true_labels)
+            print(logits)
 
-        eval_loss = eval_loss / len(val_loader)
+        eval_loss = total_val_loss / len(val_loader)
         print("Validation loss: {}".format(eval_loss))
         print("Validation Accuracy: {}".format(accuracy_score(true_labels, pred_labels)))
         print("Validation F1-Score: {}".format(f1_score(true_labels, pred_labels)))

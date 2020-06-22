@@ -5,8 +5,11 @@ import torch
 from seqeval.metrics import accuracy_score
 from seqeval.metrics import classification_report
 from tqdm import tqdm, trange
+from torch.utils.tensorboard import SummaryWriter
+
 
 files_paths = ['data/sensitive1.tsv', 'data/sensitive2.tsv', 'data/sensitive3.tsv']
+pretrained = 'DialoGPT-small'
 
 # ========================================
 #               DATA
@@ -15,6 +18,7 @@ files_paths = ['data/sensitive1.tsv', 'data/sensitive2.tsv', 'data/sensitive3.ts
 corpus = Corpus(files_paths)
 
 dataset = corpus.get_dataset_bert()
+
 
 
 test_size = int(.3 * len(dataset))
@@ -30,6 +34,9 @@ batch_size = 64 # !!!! CAMBIAR
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
+print("train size : {}".format(train_size))
+print("val size : {}".format(val_size))
+print("test size: {}".format(test_size))
 
 # ========================================
 #               MODEL
@@ -40,34 +47,34 @@ model = BertForTokenClassification.from_pretrained("bert-base-uncased", num_labe
 optimizer = BertAdam(model.parameters(),  lr = 2e-5, eps = 1e-8)
 
 
-def flat_acc(pred, labels):
-    pred = pred.argmax(dim=2).view(-1)
-    labels = labels.view(-1)
-
-    total, accept = 0, 0
-
-    for i, l in enumerate(labels):
-        if l == 0:
-            continue
-        total += 1
-        if l == pred[i]:
-            accept += 1
-
-    return accept / total
-
-def acc_by_label(pred, labels):
-    pred = pred.argmax(dim=2).view(-1)
-    labels = labels.view(-1)
-
-    count = torch.zeros(11)
-    accept = torch.zeros(11)
-
-    for i, l in enumerate(labels):
-        count[l] += 1
-        if l == pred[i]:
-            accept[l] += 1
-
-    return count, accept
+# def flat_acc(pred, labels):
+#     pred = pred.argmax(dim=2).view(-1)
+#     labels = labels.view(-1)
+#
+#     total, accept = 0, 0
+#
+#     for i, l in enumerate(labels):
+#         if l == 0:
+#             continue
+#         total += 1
+#         if l == pred[i]:
+#             accept += 1
+#
+#     return accept / total
+#
+# def acc_by_label(pred, labels):
+#     pred = pred.argmax(dim=2).view(-1)
+#     labels = labels.view(-1)
+#
+#     count = torch.zeros(11)
+#     accept = torch.zeros(11)
+#
+#     for i, l in enumerate(labels):
+#         count[l] += 1
+#         if l == pred[i]:
+#             accept[l] += 1
+#
+#     return count, accept
 
 def train(epochs=5):
 
@@ -184,6 +191,7 @@ def test():
 if __name__ == '__main__':
     train(4)
     test()
+    print(model)
 
 
 # def eval(input_ids, mask):

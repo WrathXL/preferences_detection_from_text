@@ -19,7 +19,7 @@ class Corpus:
             with open(vocabulary_path) as fd:
                 self.vocabulary = json.load(fd)
 
-        self.labels = ['O', 'B-subject', 'I-subject', 'B-preference', 'I-preference', 'B-fact', 'I-fact', 'B-activity', 'I-activity', 'B-object', 'I-object']
+        self.labels = ['O', 'B-subject', 'I-subject', 'B-preference', 'I-preference',  'B-activity', 'I-activity', 'B-object', 'I-object']
         self.labels_dict = {l : self.labels.index(l) for l in self.labels}
 
         self.subjects = ['i', 'we', 'he', 'she', 'they']
@@ -141,12 +141,12 @@ class Corpus:
         return  TensorDataset(x, y)
 
 
-    def get_dataset_bert(self):
+    def get_dataset_bert(self, pre_trained='bert-base-uncased'):
         sents, tags = self.read_tsv()
 
         # Primero arrglar problema de la tokenización
         new_sents, new_tags = [], []
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        tokenizer = BertTokenizer.from_pretrained(pre_trained, do_lower_case=True)
         for i, sent in enumerate(sents):
             new_sent = []
             new_tag = []
@@ -170,7 +170,7 @@ class Corpus:
 
         x = torch.zeros((len(new_sents), max_len + 1), dtype=torch.long)
         y = torch.zeros((len(new_tags), max_len + 1), dtype=torch.long)
-        masks = torch.zeros((len(new_sents), max_len + 1), dtype=torch.float)
+        masks = torch.zeros((len(new_sents), max_len + 1), dtype=torch.long)
 
         for i, sent in enumerate(new_sents):
             encoded_dict = tokenizer.encode_plus(

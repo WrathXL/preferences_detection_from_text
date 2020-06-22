@@ -1,0 +1,26 @@
+    precision    recall  f1-score   support
+           O       0.93      0.97      0.95      7658
+   B-subject       0.99      0.99      0.99       755
+   I-subject       0.55      0.50      0.52        12
+B-preference       0.86      0.71      0.77       352
+I-preference       0.73      0.80      0.77       237
+      B-fact       0.00      0.00      0.00        31
+      I-fact       0.00      0.00      0.00        31
+  B-activity       0.80      0.50      0.62       114
+  I-activity       0.72      0.61      0.66        79
+    B-object       0.72      0.47      0.57       438
+    I-object       0.52      0.38      0.44       216
+   micro avg       0.91      0.91      0.91      9923
+   macro avg       0.62      0.54      0.57      9923
+weighted avg       0.90      0.91      0.90      9923
+
+
+            precision    recall  f1-score   support
+preference       0.80      0.67      0.73       352
+    object       0.61      0.39      0.48       438
+   subject       0.99      0.99      0.99       755
+         *       0.00      0.00      0.00         2
+  activity       0.75      0.46      0.57       114
+      fact       0.00      0.00      0.00        31
+ micro avg       0.86      0.71      0.78      1692
+ macro avg       0.82      0.71      0.76      1692

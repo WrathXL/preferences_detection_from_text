@@ -5,3 +5,4 @@ data/glove.6B.100d.txt
 data/sensitive.tsv
 data/vocabulary_glove.json
 ner_dataset.csv
+/models

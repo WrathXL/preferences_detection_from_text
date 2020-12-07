@@ -21,7 +21,7 @@ The sentences were annotated using the web tool [**Webanno**](https://webanno.gi
 
 **Examples**: 
 
-![](img/sent4.png)
+![](img/sent1.png)
 
 <br>
 

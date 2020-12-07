@@ -1,6 +1,7 @@
 from corpus_process import Corpus
 from torch.utils.data import DataLoader, random_split
 from transformers import BertForTokenClassification, AdamW
+from pytorch_pretrained_bert import BertAdam
 import torch
 from seqeval.metrics import accuracy_score, f1_score, classification_report
 from seqeval.metrics import classification_report
@@ -18,9 +19,8 @@ pretrained_dataset = 'bert-base-uncased'
 data_train = Corpus(files_train_paths).get_dataset_bert()
 data_test = Corpus(files_test_path).get_dataset_bert()
 
-val_size = int(0.4 * len(data_train))
+val_size = int(0.1 * len(data_train))
 train_size = len(data_train) - val_size
-
 
 train_dataset, val_dataset = random_split(data_train, [train_size, val_size])
 
@@ -29,17 +29,18 @@ batch_size = 64
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=False)
 val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
-print("train size : {}".format(train_size))
-print("val size : {}".format(val_size))
+print("Train size : {}".format(train_size))
+print("Validation size : {}".format(val_size))
 
 # ========================================
 #               MODEL
 # ========================================
 
 LABELS = Corpus(files_test_path).labels
+print("Labels {}".format(LABELS))
 
 model = BertForTokenClassification.from_pretrained(pretrained_dataset, num_labels=len(LABELS))
-optimizer = AdamW(model.parameters(),  lr = 2e-5, eps = 1e-8)
+optimizer = BertAdam(model.parameters(),  lr = 2e-5, eps = 1e-8)
 
 # print functions
 def p_epoch_status(epoch, epochs):
@@ -108,16 +109,13 @@ def train(epochs=5):
 
             logits = logits.argmax(dim=2).view(-1)
             labels = labels.view(-1)
-            mask = mask.view(-1)
+            input_ids = input_ids.view(-1)
 
             for i in range(len(input_ids)):
-                if mask[i]:
+                if input_ids[i] != 0:
                     pred_labels.append(LABELS[logits[i]])
                     true_labels.append(LABELS[labels[i]])
 
-            print(mask)
-            print(true_labels)
-            print(logits)
 
         eval_loss = total_val_loss / len(val_loader)
         print("Validation loss: {}".format(eval_loss))
@@ -135,10 +133,10 @@ def test():
             logits = model(torch.tensor([input_ids.numpy()]))
 
         logits = logits[0].argmax(dim=2).view(-1)
-        mask = mask.view(-1)
+        input_ids = input_ids.view(-1)
 
         for i in range(len(input_ids)):
-            if mask[i]:
+            if input_ids[i] != 0:
                 pred_labels.append(LABELS[logits[i]])
                 true_labels.append(LABELS[labels[i]])
 
@@ -150,9 +148,8 @@ def test():
 
 
 if __name__ == '__main__':
-    train(4)
+    train(6)
     test()
-    print(model)
 
 
 # def eval(input_ids, mask):

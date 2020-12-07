@@ -8,73 +8,43 @@ from tqdm import tqdm, trange
 from torch.utils.tensorboard import SummaryWriter
 
 
-files_paths = ['data/sensitive1.tsv', 'data/sensitive2.tsv', 'data/sensitive3.tsv']
-pretrained = 'DialoGPT-small'
+files_train_paths = ['data/sensitive1.tsv', 'data/sensitive3.tsv']
+files_test_path = ['data/sensitive2.tsv']
+pretrained_dataset = 'bert-base-uncased'
 
 # ========================================
 #               DATA
 # ========================================
 
-corpus = Corpus(files_paths)
+data_train = Corpus(files_train_paths).get_dataset_bert()
+data_test = Corpus(files_test_path).get_dataset_bert()
 
-dataset = corpus.get_dataset_bert()
+val_size = int(0.2 * len(data_train))
+train_size = len(data_train) - val_size
 
 
+train_dataset, val_dataset = random_split(data_train, [train_size, val_size])
 
-test_size = int(.3 * len(dataset))
-rest = len(dataset) - test_size
+batch_size = 64
 
-val_size = int(.2 * rest)
-train_size = rest - val_size
-
-train_dataset, val_dataset, test_dataset = random_split(dataset,[train_size, val_size, test_size]) # !!! CAMBIAR SIZES
-
-batch_size = 64 # !!!! CAMBIAR
-
-train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=False)
 val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 print("train size : {}".format(train_size))
 print("val size : {}".format(val_size))
-print("test size: {}".format(test_size))
 
 # ========================================
 #               MODEL
 # ========================================
 
+LABELS = Corpus(files_test_path).labels
 
-model = BertForTokenClassification.from_pretrained("bert-base-uncased", num_labels=len(corpus.labels))
+
+model = BertForTokenClassification.from_pretrained("bert-base-uncased", num_labels=len(LABELS))
 optimizer = BertAdam(model.parameters(),  lr = 2e-5, eps = 1e-8)
 
 
-# def flat_acc(pred, labels):
-#     pred = pred.argmax(dim=2).view(-1)
-#     labels = labels.view(-1)
-#
-#     total, accept = 0, 0
-#
-#     for i, l in enumerate(labels):
-#         if l == 0:
-#             continue
-#         total += 1
-#         if l == pred[i]:
-#             accept += 1
-#
-#     return accept / total
-#
-# def acc_by_label(pred, labels):
-#     pred = pred.argmax(dim=2).view(-1)
-#     labels = labels.view(-1)
-#
-#     count = torch.zeros(11)
-#     accept = torch.zeros(11)
-#
-#     for i, l in enumerate(labels):
-#         count[l] += 1
-#         if l == pred[i]:
-#             accept[l] += 1
-#
-#     return count, accept
+
 
 def train(epochs=5):
 
@@ -155,8 +125,8 @@ def train(epochs=5):
             input_ids = input_ids.view(-1)
             for i in range(len(input_ids)):
                 if input_ids[i] != 0:
-                    pred_labels.append(corpus.labels[logits[i]])
-                    true_labels.append(corpus.labels[labels[i]])
+                    pred_labels.append(LABELS[logits[i]])
+                    true_labels.append(LABELS[labels[i]])
 
 
         #print("  Accuracy: {0:.2f}".format(total_val_acc / len(val_loader)))
@@ -171,7 +141,7 @@ def test():
     pred_labels = []
     true_labels = []
 
-    for input_ids, labels, _ in test_dataset:
+    for input_ids, labels, _ in data_test:
         input_ids = input_ids.numpy()
         with torch.no_grad():
             logits = model(torch.tensor([input_ids]))
@@ -180,8 +150,8 @@ def test():
 
         for i in range(len(input_ids)):
             if input_ids[i] != 0:
-                pred_labels.append(corpus.labels[logits[i]])
-                true_labels.append(corpus.labels[labels[i]])
+                pred_labels.append(LABELS[logits[i]])
+                true_labels.append(LABELS[labels[i]])
 
     print("\nTest results\n")
     print(classification_report(true_labels, pred_labels))

@@ -1,0 +1,529 @@
+runfile('/Users/wrath/Documents/AI Projects/preferences_detection/main.py', wdir='/Users/wrath/Documents/AI Projects/preferences_detection')
+Train size : 1964
+Validation size : 491
+Labels ['O', 'B-subject', 'I-subject', 'B-preference', 'I-preference', 'B-activity', 'I-activity', 'B-object', 'I-object']
+======== Epoch 1 / 4 ========
+Training...
+None
+Train Epoch: 0 [64/1964 (3%)]
+Train Epoch: 0 [128/1964 (6%)]
+Train Epoch: 0 [192/1964 (10%)]
+Train Epoch: 0 [256/1964 (13%)]
+Train Epoch: 0 [320/1964 (16%)]
+Train Epoch: 0 [384/1964 (19%)]
+Train Epoch: 0 [448/1964 (23%)]
+Train Epoch: 0 [512/1964 (26%)]
+Train Epoch: 0 [576/1964 (29%)]
+Train Epoch: 0 [640/1964 (32%)]
+Train Epoch: 0 [704/1964 (35%)]
+Train Epoch: 0 [768/1964 (39%)]
+Train Epoch: 0 [832/1964 (42%)]
+Train Epoch: 0 [896/1964 (45%)]
+Train Epoch: 0 [960/1964 (48%)]
+Train Epoch: 0 [1024/1964 (52%)]
+Train Epoch: 0 [1088/1964 (55%)]
+Train Epoch: 0 [1152/1964 (58%)]
+Train Epoch: 0 [1216/1964 (61%)]
+Train Epoch: 0 [1280/1964 (65%)]
+Train Epoch: 0 [1344/1964 (68%)]
+Train Epoch: 0 [1408/1964 (71%)]
+Train Epoch: 0 [1472/1964 (74%)]
+Train Epoch: 0 [1536/1964 (77%)]
+Train Epoch: 0 [1600/1964 (81%)]
+Train Epoch: 0 [1664/1964 (84%)]
+Train Epoch: 0 [1728/1964 (87%)]
+Train Epoch: 0 [1792/1964 (90%)]
+Train Epoch: 0 [1856/1964 (94%)]
+Train Epoch: 0 [1920/1964 (97%)]
+Train Epoch: 0 [1364/1964 (100%)]
+Average train loss: 0.9890081094157311
+Running Validation...
+Validation loss: 0.6520684659481049
+Validation Accuracy: 0.8215068493150685
+Validation F1-Score: 0.31778656126482213
+            precision    recall  f1-score   support
+    object       0.00      0.00      0.00       292
+preference       0.00      0.00      0.00       216
+  activity       0.00      0.00      0.00        88
+   subject       0.96      0.44      0.60       460
+ micro avg       0.96      0.19      0.32      1056
+ macro avg       0.42      0.19      0.26      1056
+======== Epoch 2 / 4 ========
+Training...
+None
+Train Epoch: 1 [64/1964 (3%)]
+Train Epoch: 1 [128/1964 (6%)]
+Train Epoch: 1 [192/1964 (10%)]
+Train Epoch: 1 [256/1964 (13%)]
+Train Epoch: 1 [320/1964 (16%)]
+Train Epoch: 1 [384/1964 (19%)]
+Train Epoch: 1 [448/1964 (23%)]
+Train Epoch: 1 [512/1964 (26%)]
+Train Epoch: 1 [576/1964 (29%)]
+Train Epoch: 1 [640/1964 (32%)]
+Train Epoch: 1 [704/1964 (35%)]
+Train Epoch: 1 [768/1964 (39%)]
+Train Epoch: 1 [832/1964 (42%)]
+Train Epoch: 1 [896/1964 (45%)]
+Train Epoch: 1 [960/1964 (48%)]
+Train Epoch: 1 [1024/1964 (52%)]
+Train Epoch: 1 [1088/1964 (55%)]
+Train Epoch: 1 [1152/1964 (58%)]
+Train Epoch: 1 [1216/1964 (61%)]
+Train Epoch: 1 [1280/1964 (65%)]
+Train Epoch: 1 [1344/1964 (68%)]
+Train Epoch: 1 [1408/1964 (71%)]
+Train Epoch: 1 [1472/1964 (74%)]
+Train Epoch: 1 [1536/1964 (77%)]
+Train Epoch: 1 [1600/1964 (81%)]
+Train Epoch: 1 [1664/1964 (84%)]
+Train Epoch: 1 [1728/1964 (87%)]
+Train Epoch: 1 [1792/1964 (90%)]
+Train Epoch: 1 [1856/1964 (94%)]
+Train Epoch: 1 [1920/1964 (97%)]
+Train Epoch: 1 [1364/1964 (100%)]
+Average train loss: 0.46853020018146885
+Running Validation...
+Validation loss: 0.3169011287391186
+Validation Accuracy: 0.8991780821917809
+Validation F1-Score: 0.6187797490263955
+            precision    recall  f1-score   support
+    object       0.39      0.51      0.44       292
+preference       0.35      0.64      0.45       216
+  activity       0.00      0.00      0.00        88
+   subject       0.90      0.93      0.92       460
+ micro avg       0.57      0.68      0.62      1056
+ macro avg       0.57      0.68      0.61      1056
+======== Epoch 3 / 4 ========
+Training...
+None
+Train Epoch: 2 [64/1964 (3%)]
+Train Epoch: 2 [128/1964 (6%)]
+Train Epoch: 2 [192/1964 (10%)]
+Train Epoch: 2 [256/1964 (13%)]
+Train Epoch: 2 [320/1964 (16%)]
+Train Epoch: 2 [384/1964 (19%)]
+Train Epoch: 2 [448/1964 (23%)]
+Train Epoch: 2 [512/1964 (26%)]
+Train Epoch: 2 [576/1964 (29%)]
+Train Epoch: 2 [640/1964 (32%)]
+Train Epoch: 2 [704/1964 (35%)]
+Train Epoch: 2 [768/1964 (39%)]
+Train Epoch: 2 [832/1964 (42%)]
+Train Epoch: 2 [896/1964 (45%)]
+Train Epoch: 2 [960/1964 (48%)]
+Train Epoch: 2 [1024/1964 (52%)]
+Train Epoch: 2 [1088/1964 (55%)]
+Train Epoch: 2 [1152/1964 (58%)]
+Train Epoch: 2 [1216/1964 (61%)]
+Train Epoch: 2 [1280/1964 (65%)]
+Train Epoch: 2 [1344/1964 (68%)]
+Train Epoch: 2 [1408/1964 (71%)]
+Train Epoch: 2 [1472/1964 (74%)]
+Train Epoch: 2 [1536/1964 (77%)]
+Train Epoch: 2 [1600/1964 (81%)]
+Train Epoch: 2 [1664/1964 (84%)]
+Train Epoch: 2 [1728/1964 (87%)]
+Train Epoch: 2 [1792/1964 (90%)]
+Train Epoch: 2 [1856/1964 (94%)]
+Train Epoch: 2 [1920/1964 (97%)]
+Train Epoch: 2 [1364/1964 (100%)]
+Average train loss: 0.2596227223834684
+Running Validation...
+Validation loss: 0.21275528520345688
+Validation Accuracy: 0.9361643835616439
+Validation F1-Score: 0.7547511312217196
+            precision    recall  f1-score   support
+    object       0.59      0.63      0.61       292
+preference       0.51      0.71      0.59       216
+  activity       0.55      0.47      0.51        88
+   subject       0.98      0.99      0.98       460
+ micro avg       0.72      0.79      0.75      1056
+ macro avg       0.74      0.79      0.76      1056
+======== Epoch 4 / 4 ========
+Training...
+None
+Train Epoch: 3 [64/1964 (3%)]
+Train Epoch: 3 [128/1964 (6%)]
+Train Epoch: 3 [192/1964 (10%)]
+Train Epoch: 3 [256/1964 (13%)]
+Train Epoch: 3 [320/1964 (16%)]
+Train Epoch: 3 [384/1964 (19%)]
+Train Epoch: 3 [448/1964 (23%)]
+Train Epoch: 3 [512/1964 (26%)]
+Train Epoch: 3 [576/1964 (29%)]
+Train Epoch: 3 [640/1964 (32%)]
+Train Epoch: 3 [704/1964 (35%)]
+Train Epoch: 3 [768/1964 (39%)]
+Train Epoch: 3 [832/1964 (42%)]
+Train Epoch: 3 [896/1964 (45%)]
+Train Epoch: 3 [960/1964 (48%)]
+Train Epoch: 3 [1024/1964 (52%)]
+Train Epoch: 3 [1088/1964 (55%)]
+Train Epoch: 3 [1152/1964 (58%)]
+Train Epoch: 3 [1216/1964 (61%)]
+Train Epoch: 3 [1280/1964 (65%)]
+Train Epoch: 3 [1344/1964 (68%)]
+Train Epoch: 3 [1408/1964 (71%)]
+Train Epoch: 3 [1472/1964 (74%)]
+Train Epoch: 3 [1536/1964 (77%)]
+Train Epoch: 3 [1600/1964 (81%)]
+Train Epoch: 3 [1664/1964 (84%)]
+Train Epoch: 3 [1728/1964 (87%)]
+Train Epoch: 3 [1792/1964 (90%)]
+Train Epoch: 3 [1856/1964 (94%)]
+Train Epoch: 3 [1920/1964 (97%)]
+Train Epoch: 3 [1364/1964 (100%)]
+Average train loss: 0.18188764202979305
+Running Validation...
+Validation loss: 0.18205310869961977
+Validation Accuracy: 0.9484931506849315
+Validation F1-Score: 0.8131472309770372
+            precision    recall  f1-score   support
+    object       0.64      0.72      0.68       292
+preference       0.66      0.81      0.73       216
+  activity       0.58      0.70      0.64        88
+   subject       0.98      0.99      0.98       460
+ micro avg       0.78      0.86      0.81      1056
+ macro avg       0.79      0.86      0.82      1056
+Test Accuracy: 0.9266092660926609
+Test F1-Score: 0.7481648785996613
+            precision    recall  f1-score   support
+preference       0.55      0.69      0.61       365
+    object       0.63      0.51      0.56       487
+   subject       0.98      0.97      0.98       787
+  activity       0.46      0.39      0.43       145
+ micro avg       0.75      0.74      0.75      1784
+ macro avg       0.76      0.74      0.75      1784
+            precision    recall  f1-score   support
+
+
+
+Python 3.6.5 (default, Dec 26 2019, 23:08:34)
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.11.1 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.11.1
+Python 3.6.5 (default, Dec 26 2019, 23:08:34)
+[GCC 4.2.1 Compatible Apple LLVM 10.0.1 (clang-1001.0.46.4)] on darwin
+In[2]: runfile('/Users/wrath/Documents/AI Projects/preferences_detection/main.py', wdir='/Users/wrath/Documents/AI Projects/preferences_detection')
+Train size : 2210
+Validation size : 245
+Labels ['O', 'B-subject', 'I-subject', 'B-preference', 'I-preference', 'B-activity', 'I-activity', 'B-object', 'I-object']
+t_total value of -1 results in schedule not being applied
+======== Epoch 1 / 6 ========
+Training...
+None
+Train Epoch: 0 [64/2210 (3%)]
+Train Epoch: 0 [128/2210 (6%)]
+Train Epoch: 0 [192/2210 (9%)]
+Train Epoch: 0 [256/2210 (11%)]
+Train Epoch: 0 [320/2210 (14%)]
+Train Epoch: 0 [384/2210 (17%)]
+Train Epoch: 0 [448/2210 (20%)]
+Train Epoch: 0 [512/2210 (23%)]
+Train Epoch: 0 [576/2210 (26%)]
+Train Epoch: 0 [640/2210 (29%)]
+Train Epoch: 0 [704/2210 (31%)]
+Train Epoch: 0 [768/2210 (34%)]
+Train Epoch: 0 [832/2210 (37%)]
+Train Epoch: 0 [896/2210 (40%)]
+Train Epoch: 0 [960/2210 (43%)]
+Train Epoch: 0 [1024/2210 (46%)]
+Train Epoch: 0 [1088/2210 (49%)]
+Train Epoch: 0 [1152/2210 (51%)]
+Train Epoch: 0 [1216/2210 (54%)]
+Train Epoch: 0 [1280/2210 (57%)]
+Train Epoch: 0 [1344/2210 (60%)]
+Train Epoch: 0 [1408/2210 (63%)]
+Train Epoch: 0 [1472/2210 (66%)]
+Train Epoch: 0 [1536/2210 (69%)]
+Train Epoch: 0 [1600/2210 (71%)]
+Train Epoch: 0 [1664/2210 (74%)]
+Train Epoch: 0 [1728/2210 (77%)]
+Train Epoch: 0 [1792/2210 (80%)]
+Train Epoch: 0 [1856/2210 (83%)]
+Train Epoch: 0 [1920/2210 (86%)]
+Train Epoch: 0 [1984/2210 (89%)]
+Train Epoch: 0 [2048/2210 (91%)]
+Train Epoch: 0 [2112/2210 (94%)]
+Train Epoch: 0 [2176/2210 (97%)]
+Train Epoch: 0 [1190/2210 (100%)]
+Average train loss: 0.6734638959169388
+Running Validation...
+Validation loss: 0.22787901014089584
+Validation Accuracy: 0.927682119205298
+Validation F1-Score: 0.6908431550317317
+            precision    recall  f1-score   support
+    object       0.38      0.43      0.40       142
+   subject       0.98      0.99      0.99       245
+preference       0.52      0.65      0.58       107
+  activity       0.21      0.21      0.21        33
+ micro avg       0.66      0.72      0.69       527
+ macro avg       0.68      0.72      0.70       527
+======== Epoch 2 / 6 ========
+Training...
+None
+Train Epoch: 1 [64/2210 (3%)]
+Train Epoch: 1 [128/2210 (6%)]
+Train Epoch: 1 [192/2210 (9%)]
+Train Epoch: 1 [256/2210 (11%)]
+Train Epoch: 1 [320/2210 (14%)]
+Train Epoch: 1 [384/2210 (17%)]
+Train Epoch: 1 [448/2210 (20%)]
+Train Epoch: 1 [512/2210 (23%)]
+Train Epoch: 1 [576/2210 (26%)]
+Train Epoch: 1 [640/2210 (29%)]
+Train Epoch: 1 [704/2210 (31%)]
+Train Epoch: 1 [768/2210 (34%)]
+Train Epoch: 1 [832/2210 (37%)]
+Train Epoch: 1 [896/2210 (40%)]
+Train Epoch: 1 [960/2210 (43%)]
+Train Epoch: 1 [1024/2210 (46%)]
+Train Epoch: 1 [1088/2210 (49%)]
+Train Epoch: 1 [1152/2210 (51%)]
+Train Epoch: 1 [1216/2210 (54%)]
+Train Epoch: 1 [1280/2210 (57%)]
+Train Epoch: 1 [1344/2210 (60%)]
+Train Epoch: 1 [1408/2210 (63%)]
+Train Epoch: 1 [1472/2210 (66%)]
+Train Epoch: 1 [1536/2210 (69%)]
+Train Epoch: 1 [1600/2210 (71%)]
+Train Epoch: 1 [1664/2210 (74%)]
+Train Epoch: 1 [1728/2210 (77%)]
+Train Epoch: 1 [1792/2210 (80%)]
+Train Epoch: 1 [1856/2210 (83%)]
+Train Epoch: 1 [1920/2210 (86%)]
+Train Epoch: 1 [1984/2210 (89%)]
+Train Epoch: 1 [2048/2210 (91%)]
+Train Epoch: 1 [2112/2210 (94%)]
+Train Epoch: 1 [2176/2210 (97%)]
+Train Epoch: 1 [1190/2210 (100%)]
+Average train loss: 0.18506212660244534
+Running Validation...
+Validation loss: 0.1632438264787197
+Validation Accuracy: 0.9496688741721855
+Validation F1-Score: 0.8288973384030418
+            precision    recall  f1-score   support
+    object       0.66      0.61      0.63       142
+   subject       1.00      1.00      1.00       245
+preference       0.79      0.81      0.80       107
+  activity       0.49      0.58      0.53        33
+ micro avg       0.83      0.83      0.83       527
+ macro avg       0.83      0.83      0.83       527
+======== Epoch 3 / 6 ========
+Training...
+None
+Train Epoch: 2 [64/2210 (3%)]
+Train Epoch: 2 [128/2210 (6%)]
+Train Epoch: 2 [192/2210 (9%)]
+Train Epoch: 2 [256/2210 (11%)]
+Train Epoch: 2 [320/2210 (14%)]
+Train Epoch: 2 [384/2210 (17%)]
+Train Epoch: 2 [448/2210 (20%)]
+Train Epoch: 2 [512/2210 (23%)]
+Train Epoch: 2 [576/2210 (26%)]
+Train Epoch: 2 [640/2210 (29%)]
+Train Epoch: 2 [704/2210 (31%)]
+Train Epoch: 2 [768/2210 (34%)]
+Train Epoch: 2 [832/2210 (37%)]
+Train Epoch: 2 [896/2210 (40%)]
+Train Epoch: 2 [960/2210 (43%)]
+Train Epoch: 2 [1024/2210 (46%)]
+Train Epoch: 2 [1088/2210 (49%)]
+Train Epoch: 2 [1152/2210 (51%)]
+Train Epoch: 2 [1216/2210 (54%)]
+Train Epoch: 2 [1280/2210 (57%)]
+Train Epoch: 2 [1344/2210 (60%)]
+Train Epoch: 2 [1408/2210 (63%)]
+Train Epoch: 2 [1472/2210 (66%)]
+Train Epoch: 2 [1536/2210 (69%)]
+Train Epoch: 2 [1600/2210 (71%)]
+Train Epoch: 2 [1664/2210 (74%)]
+Train Epoch: 2 [1728/2210 (77%)]
+Train Epoch: 2 [1792/2210 (80%)]
+Train Epoch: 2 [1856/2210 (83%)]
+Train Epoch: 2 [1920/2210 (86%)]
+Train Epoch: 2 [1984/2210 (89%)]
+Train Epoch: 2 [2048/2210 (91%)]
+Train Epoch: 2 [2112/2210 (94%)]
+Train Epoch: 2 [2176/2210 (97%)]
+Train Epoch: 2 [1190/2210 (100%)]
+Average train loss: 0.10230417613472258
+Running Validation...
+Validation loss: 0.17056052386760712
+Validation Accuracy: 0.9517880794701987
+Validation F1-Score: 0.8432835820895522
+            precision    recall  f1-score   support
+    object       0.66      0.69      0.68       142
+   subject       0.99      1.00      0.99       245
+preference       0.81      0.85      0.83       107
+  activity       0.49      0.58      0.53        33
+ micro avg       0.83      0.86      0.84       527
+ macro avg       0.84      0.86      0.85       527
+======== Epoch 4 / 6 ========
+Training...
+None
+Train Epoch: 3 [64/2210 (3%)]
+Train Epoch: 3 [128/2210 (6%)]
+Train Epoch: 3 [192/2210 (9%)]
+Train Epoch: 3 [256/2210 (11%)]
+Train Epoch: 3 [320/2210 (14%)]
+Train Epoch: 3 [384/2210 (17%)]
+Train Epoch: 3 [448/2210 (20%)]
+Train Epoch: 3 [512/2210 (23%)]
+Train Epoch: 3 [576/2210 (26%)]
+Train Epoch: 3 [640/2210 (29%)]
+Train Epoch: 3 [704/2210 (31%)]
+Train Epoch: 3 [768/2210 (34%)]
+Train Epoch: 3 [832/2210 (37%)]
+Train Epoch: 3 [896/2210 (40%)]
+Train Epoch: 3 [960/2210 (43%)]
+Train Epoch: 3 [1024/2210 (46%)]
+Train Epoch: 3 [1088/2210 (49%)]
+Train Epoch: 3 [1152/2210 (51%)]
+Train Epoch: 3 [1216/2210 (54%)]
+Train Epoch: 3 [1280/2210 (57%)]
+Train Epoch: 3 [1344/2210 (60%)]
+Train Epoch: 3 [1408/2210 (63%)]
+Train Epoch: 3 [1472/2210 (66%)]
+Train Epoch: 3 [1536/2210 (69%)]
+Train Epoch: 3 [1600/2210 (71%)]
+Train Epoch: 3 [1664/2210 (74%)]
+Train Epoch: 3 [1728/2210 (77%)]
+Train Epoch: 3 [1792/2210 (80%)]
+Train Epoch: 3 [1856/2210 (83%)]
+Train Epoch: 3 [1920/2210 (86%)]
+Train Epoch: 3 [1984/2210 (89%)]
+Train Epoch: 3 [2048/2210 (91%)]
+Train Epoch: 3 [2112/2210 (94%)]
+Train Epoch: 3 [2176/2210 (97%)]
+Train Epoch: 3 [1190/2210 (100%)]
+Average train loss: 0.06570450727428709
+Running Validation...
+Validation loss: 0.18675142154097557
+Validation Accuracy: 0.9533774834437087
+Validation F1-Score: 0.852093023255814
+            precision    recall  f1-score   support
+    object       0.67      0.71      0.69       142
+   subject       1.00      1.00      1.00       245
+preference       0.82      0.88      0.85       107
+  activity       0.50      0.58      0.54        33
+ micro avg       0.84      0.87      0.85       527
+ macro avg       0.84      0.87      0.85       527
+======== Epoch 5 / 6 ========
+Training...
+None
+Train Epoch: 4 [64/2210 (3%)]
+Train Epoch: 4 [128/2210 (6%)]
+Train Epoch: 4 [192/2210 (9%)]
+Train Epoch: 4 [256/2210 (11%)]
+Train Epoch: 4 [320/2210 (14%)]
+Train Epoch: 4 [384/2210 (17%)]
+Train Epoch: 4 [448/2210 (20%)]
+Train Epoch: 4 [512/2210 (23%)]
+Train Epoch: 4 [576/2210 (26%)]
+Train Epoch: 4 [640/2210 (29%)]
+Train Epoch: 4 [704/2210 (31%)]
+Train Epoch: 4 [768/2210 (34%)]
+Train Epoch: 4 [832/2210 (37%)]
+Train Epoch: 4 [896/2210 (40%)]
+Train Epoch: 4 [960/2210 (43%)]
+Train Epoch: 4 [1024/2210 (46%)]
+Train Epoch: 4 [1088/2210 (49%)]
+Train Epoch: 4 [1152/2210 (51%)]
+Train Epoch: 4 [1216/2210 (54%)]
+Train Epoch: 4 [1280/2210 (57%)]
+Train Epoch: 4 [1344/2210 (60%)]
+Train Epoch: 4 [1408/2210 (63%)]
+Train Epoch: 4 [1472/2210 (66%)]
+Train Epoch: 4 [1536/2210 (69%)]
+Train Epoch: 4 [1600/2210 (71%)]
+Train Epoch: 4 [1664/2210 (74%)]
+Train Epoch: 4 [1728/2210 (77%)]
+Train Epoch: 4 [1792/2210 (80%)]
+Train Epoch: 4 [1856/2210 (83%)]
+Train Epoch: 4 [1920/2210 (86%)]
+Train Epoch: 4 [1984/2210 (89%)]
+Train Epoch: 4 [2048/2210 (91%)]
+Train Epoch: 4 [2112/2210 (94%)]
+Train Epoch: 4 [2176/2210 (97%)]
+Train Epoch: 4 [1190/2210 (100%)]
+Average train loss: 0.048636403041226524
+Running Validation...
+Validation loss: 0.18715561740100384
+Validation Accuracy: 0.9557615894039735
+Validation F1-Score: 0.8643592142188963
+            precision    recall  f1-score   support
+    object       0.71      0.75      0.73       142
+   subject       0.99      1.00      0.99       245
+preference       0.82      0.86      0.84       107
+  activity       0.59      0.61      0.60        33
+ micro avg       0.85      0.88      0.86       527
+ macro avg       0.86      0.88      0.87       527
+======== Epoch 6 / 6 ========
+Training...
+None
+Train Epoch: 5 [64/2210 (3%)]
+Train Epoch: 5 [128/2210 (6%)]
+Train Epoch: 5 [192/2210 (9%)]
+Train Epoch: 5 [256/2210 (11%)]
+Train Epoch: 5 [320/2210 (14%)]
+Train Epoch: 5 [384/2210 (17%)]
+Train Epoch: 5 [448/2210 (20%)]
+Train Epoch: 5 [512/2210 (23%)]
+Train Epoch: 5 [576/2210 (26%)]
+Train Epoch: 5 [640/2210 (29%)]
+Train Epoch: 5 [704/2210 (31%)]
+Train Epoch: 5 [768/2210 (34%)]
+Train Epoch: 5 [832/2210 (37%)]
+Train Epoch: 5 [896/2210 (40%)]
+Train Epoch: 5 [960/2210 (43%)]
+Train Epoch: 5 [1024/2210 (46%)]
+Train Epoch: 5 [1088/2210 (49%)]
+Train Epoch: 5 [1152/2210 (51%)]
+Train Epoch: 5 [1216/2210 (54%)]
+Train Epoch: 5 [1280/2210 (57%)]
+Train Epoch: 5 [1344/2210 (60%)]
+Train Epoch: 5 [1408/2210 (63%)]
+Train Epoch: 5 [1472/2210 (66%)]
+Train Epoch: 5 [1536/2210 (69%)]
+Train Epoch: 5 [1600/2210 (71%)]
+Train Epoch: 5 [1664/2210 (74%)]
+Train Epoch: 5 [1728/2210 (77%)]
+Train Epoch: 5 [1792/2210 (80%)]
+Train Epoch: 5 [1856/2210 (83%)]
+Train Epoch: 5 [1920/2210 (86%)]
+Train Epoch: 5 [1984/2210 (89%)]
+Train Epoch: 5 [2048/2210 (91%)]
+Train Epoch: 5 [2112/2210 (94%)]
+Train Epoch: 5 [2176/2210 (97%)]
+Train Epoch: 5 [1190/2210 (100%)]
+Average train loss: 0.03272731724594321
+Running Validation...
+Validation loss: 0.2071017287671566
+Validation Accuracy: 0.9576158940397351
+Validation F1-Score: 0.8710280373831776
+            precision    recall  f1-score   support
+    object       0.72      0.75      0.74       142
+   subject       0.99      1.00      0.99       245
+preference       0.83      0.86      0.84       107
+  activity       0.62      0.70      0.66        33
+ micro avg       0.86      0.88      0.87       527
+ macro avg       0.86      0.88      0.87       527
+Test Accuracy: 0.9403034030340304
+Test F1-Score: 0.8332874069991733
+            precision    recall  f1-score   support
+  activity       0.70      0.59      0.64       145
+    object       0.62      0.71      0.66       487
+   subject       0.98      0.99      0.99       787
+preference       0.81      0.82      0.81       365
+ micro avg       0.82      0.85      0.83      1784
+ macro avg       0.83      0.85      0.84      1784
+            precision    recall  f1-score   support
+  activity       0.70      0.59      0.64       145
+    object       0.62      0.71      0.66       487
+   subject       0.98      0.99      0.99       787
+preference       0.81      0.82      0.81       365
+ micro avg       0.82      0.85      0.83      1784
+ macro avg       0.83      0.85      0.84      1784
+

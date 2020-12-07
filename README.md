@@ -9,7 +9,7 @@ Although below is a little more context, the project is still a bunch of investi
 ## Dataset
 
 Text data was taken from  [**Topical-chats**](https://github.com/alexa/Topical-Chat). The conversations there, are very similar to the style of social-networks such as Reddit.
-The sentences were annotated using the web tool [**Webanno**](https://webanno.github.io/webanno/) and the below Schema
+The sentences were annotated using the web tool [**Webanno**](https://webanno.github.io/webanno/) and the below Scheme
 
 
 ### Annotation Scheme
@@ -34,4 +34,4 @@ Various steps for cleaning, organizing, and formatting data  were made and can b
 ## Models
 
 1. The first approach is [CRF](https://en.wikipedia.org/wiki/Conditional_random_field) that serve as a baseline model at an Entity level evaluation
-2. The second approach is a model based on fine-tuning [BERT](https://en.wikipedia.org/wiki/BERT_(language_model)) pre-trained. The results of this model are very promising and can be found in the logs folder 
+2. The second approach is a model based on fine-tuning [BERT](https://en.wikipedia.org/wiki/BERT_(language_model)) pre-trained. The results of this model are very promising and results can be found in the logs folder 
